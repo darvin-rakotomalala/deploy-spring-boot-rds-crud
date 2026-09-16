@@ -98,15 +98,16 @@ module "kms" {
 #########################################################
 
 module "s3" {
-  source                    = "./modules/s3"
-  naming_prefix             = local.naming_prefix
-  common_tags               = local.common_tags
-  alb_logs_bucket_name      = var.alb_logs_bucket_name
-  current_account_id        = data.aws_caller_identity.current.account_id
-  iam_role_ec2_app_arn      = module.iam.ec2_app_role_arn
-  jar_bucket_name           = var.jar_bucket_name
-  kms_key_alb_logs_arn      = module.kms.kms_key_alb_logs_arn
-  kms_key_jar_artifacts_arn = module.kms.kms_key_jar_artifacts_arn
+  source                           = "./modules/s3"
+  naming_prefix                    = local.naming_prefix
+  common_tags                      = local.common_tags
+  alb_logs_bucket_name             = var.alb_logs_bucket_name
+  current_account_id               = data.aws_caller_identity.current.account_id
+  iam_role_ec2_app_arn             = module.iam.ec2_app_role_arn
+  jar_bucket_name                  = var.jar_bucket_name
+  kms_key_alb_logs_arn             = module.kms.kms_key_alb_logs_arn
+  kms_key_jar_artifacts_arn        = module.kms.kms_key_jar_artifacts_arn
+  iam_role_terraform_execution_arn = module.iam.iam_role_terraform_execution_arn
 }
 
 #########################################################

@@ -64,6 +64,22 @@ resource "aws_s3_bucket_policy" "jar_artifacts" {
         ]
       },
       {
+        Sid    = "AllowGitHubActionsRolePutObject"
+        Effect = "Allow"
+        Principal = {
+          AWS = var.iam_role_terraform_execution_arn
+        }
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject"
+        ]
+        Resource = [
+          aws_s3_bucket.jar_artifacts.arn,
+          "${aws_s3_bucket.jar_artifacts.arn}/*"
+        ]
+      },
+      {
         Sid       = "DenyInsecureTransport"
         Effect    = "Deny"
         Principal = "*"

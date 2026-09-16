@@ -38,3 +38,8 @@ variable "kms_key_jar_artifacts_arn" {
   description = "ARN of KMS key JAR artifacts"
   type        = string
 }
+
+variable "iam_role_terraform_execution_arn" {
+  description = "IAM role terraform execution ARN"
+  type        = string
+}
