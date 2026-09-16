@@ -1,0 +1,129 @@
+name: Deploy securely to EC2 via SSM
+
+# Event that triggers the workflow
+on:
+  workflow_dispatch: # This enables the "Run workflow" button
+  push:
+    branches: [ main ]
+    paths:
+      - 'spring-boot-crud-app/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'spring-boot-crud-app/**'
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+  INSTANCE_ID: ${{ vars.INSTANCE_ID }}
+  S3_BUCKET: ${{ vars.S3_BUCKET }}
+  JAR_NAME: ${{ vars.JAR_NAME }}
+  APP_DIR: ${{ vars.APP_DIR }}
+  WORKING_DIR: './spring-boot-crud-app'
+
+permissions:
+  id-token: write       # Required for requesting the OIDC JWT
+  contents: read        # Required for actions/checkout
+  pull-requests: write  # Required for plan comments
+  issues: write
+
+jobs:
+  # ---------------------------------------------------------------------
+  # Step 1 - Build the Spring Boot JAR and publish it to S3
+  # ---------------------------------------------------------------------
+  build:
+    name: build-app
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Build JAR with Maven
+        working-directory: spring-boot-crud-app
+        run: mvn package
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload JAR to S3
+        run: |
+          aws s3 cp spring-boot-crud-app/target/${{ env.JAR_NAME }} \
+            s3://${{ env.S3_BUCKET }}/${{ env.JAR_NAME }}
+
+  # ---------------------------------------------------------------------
+  # Step 2 - Deploy the JAR from S3 onto the EC2 instance via SSM
+  # ---------------------------------------------------------------------
+  deploy:
+    name: deploy-app
+    needs: build
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy JAR via SSM
+        id: ssm-deploy
+        run: |
+          cat << EOF > params.json
+          {
+            "commands": [
+              "set -e",
+              "mkdir -p ${{ env.APP_DIR }}",
+              "aws s3 cp s3://${{ env.S3_BUCKET }}/${{ env.JAR_NAME }} ${{ env.APP_DIR }}/${{ env.JAR_NAME }}",
+              "chown -R ubuntu:ubuntu ${{ env.APP_DIR }}",
+              "export JAVA_OPTS='-Xmx512m -Xms256m'",
+              "cd ${{ env.APP_DIR }}",
+              "pkill -f ${{ env.JAR_NAME }} || true",
+              "sleep 2",
+              "nohup java \$JAVA_OPTS -jar ${{ env.JAR_NAME }} > ${{ env.APP_DIR }}/app.log 2>&1 &",
+              "sleep 5",
+              "echo 'Deployment commands executed successfully'"
+            ]
+          }
+          EOF
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "${{ env.INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters file://params.json \
+            --timeout-seconds 120 \
+            --comment "Deploy JAR Spring Boot application" \
+            --query "Command.CommandId" \
+            --output text)
+          echo "command_id=$COMMAND_ID" >> $GITHUB_OUTPUT
+
+      - name: Wait for deployment to complete
+        run: |
+          aws ssm wait command-executed \
+            --command-id ${{ steps.ssm-deploy.outputs.command_id }} \
+            --instance-id ${{ env.INSTANCE_ID }}
+
+      - name: Verify deployment result
+        run: |
+          RESULT=$(aws ssm get-command-invocation \
+            --command-id ${{ steps.ssm-deploy.outputs.command_id }} \
+            --instance-id ${{ env.INSTANCE_ID }} \
+            --query "{Status:Status,Output:StandardOutputContent,Error:StandardErrorContent}" \
+            --output json)
+          echo "$RESULT" | jq .
+          STATUS=$(echo "$RESULT" | jq -r '.Status')
+          if [ "$STATUS" != "Success" ]; then
+            echo "::error::Deployment failed with status: $STATUS"
+            exit 1
+          fi
+          echo "Deployment succeeded."
