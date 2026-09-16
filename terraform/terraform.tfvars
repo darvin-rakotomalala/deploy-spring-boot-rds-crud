@@ -1,0 +1,39 @@
+# ─── Adjust for your environment ────────────────────────────────────
+
+primary_region = "us-east-1"
+environment    = "dev"
+project_name   = "ce"
+team_name      = "training"
+cost_center    = "engineering"
+compliance     = "internal"
+github_org     = "darvin-rakotomalala"
+github_repo    = "deploy-spring-boot-rds-crud"
+bucket_name    = "ce-dev-terraform-state-69127"
+
+availability_zones           = ["us-east-1a", "us-east-1b"]
+vpc_cidr                     = "18.0.0.0/16"
+single_nat_gateway           = false
+alert_emails                 = ["darvintojo@gmail.com"]
+app_port                     = 8080
+db_port                      = 5432
+alb_logs_bucket_name         = ""
+jar_bucket_name              = "ce-dev-springboot-jar-bucket-69127"
+db_instance_class            = "db.r5.large"
+db_engine_version            = "16.4"
+db_allocated_storage         = 100
+db_max_allocated_storage     = 500
+db_name                      = "springbootcrud"
+db_username                  = "app_admin"
+db_multi_az                  = true
+db_backup_retention_days     = 7
+ec2_instance_type            = "t3.large"
+ec2_root_volume_size         = 30
+jar_file_key                 = "spring-boot-crud-app-0.0.1-SNAPSHOT.jar"
+ec2_instance_count           = 1
+log_retention_days           = 30
+health_check_path            = "/health"
+enable_deletion_protection   = false
+acm_certificate_arn          = ""
+connection_threshold_percent = 80
+cpu_threshold_percent        = 85
+source_file                  = "jar_file_key"

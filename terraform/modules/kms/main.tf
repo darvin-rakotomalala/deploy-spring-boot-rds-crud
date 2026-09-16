@@ -154,7 +154,6 @@ resource "aws_kms_alias" "alb_logs" {
   name          = "alias/${var.naming_prefix}-alb-logs-key"
   target_key_id = aws_kms_key.alb_logs.key_id
 }
-
 # -------- Customer Managed KMS Key for Artifacts
 resource "aws_kms_key" "jar_artifacts" {
   description             = "KMS key used for securing JAR artifact storage in S3"
@@ -183,6 +182,21 @@ resource "aws_kms_key" "jar_artifacts" {
           "kms:Decrypt",
           "kms:DescribeKey",
           "kms:GenerateDataKey*"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "Allow GitHub Actions Role KMS Access"
+        Effect = "Allow"
+        Principal = {
+          AWS = var.iam_role_terraform_execution_arn
+        }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
         ]
         Resource = "*"
       }

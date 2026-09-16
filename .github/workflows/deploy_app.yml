@@ -15,6 +15,7 @@ on:
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+  KMS_KEY_ARN: ${{ secrets.KMS_KEY_ARN }}
   INSTANCE_ID: ${{ vars.INSTANCE_ID }}
   S3_BUCKET: ${{ vars.S3_BUCKET }}
   JAR_NAME: ${{ vars.JAR_NAME }}
@@ -84,7 +85,7 @@ jobs:
             "commands": [
               "set -e",
               "mkdir -p ${{ env.APP_DIR }}",
-              "aws s3 cp s3://${{ env.S3_BUCKET }}/${{ env.JAR_NAME }} ${{ env.APP_DIR }}/${{ env.JAR_NAME }}",
+              "aws s3 cp s3://${{ env.S3_BUCKET }}/${{ env.JAR_NAME }} ${{ env.APP_DIR }}/${{ env.JAR_NAME }} --sse aws:kms --sse-kms-key-id ${{ env.KMS_KEY_ARN }}",
               "chown -R ubuntu:ubuntu ${{ env.APP_DIR }}",
               "export JAVA_OPTS='-Xmx512m -Xms256m'",
               "cd ${{ env.APP_DIR }}",

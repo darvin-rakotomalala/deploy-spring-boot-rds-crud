@@ -84,12 +84,13 @@ module "iam" {
 #########################################################
 
 module "kms" {
-  source               = "./modules/kms"
-  naming_prefix        = local.naming_prefix
-  common_tags          = local.common_tags
-  current_account_id   = data.aws_caller_identity.current.account_id
-  current_partition    = data.aws_partition.current.partition
-  iam_role_ec2_app_arn = module.iam.ec2_app_role_arn
+  source                           = "./modules/kms"
+  naming_prefix                    = local.naming_prefix
+  common_tags                      = local.common_tags
+  current_account_id               = data.aws_caller_identity.current.account_id
+  current_partition                = data.aws_partition.current.partition
+  iam_role_ec2_app_arn             = module.iam.ec2_app_role_arn
+  iam_role_terraform_execution_arn = module.iam.iam_role_terraform_execution_arn
 }
 
 #########################################################

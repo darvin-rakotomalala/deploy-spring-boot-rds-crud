@@ -62,3 +62,8 @@ output "ssm_port_forward_commands" {
     "aws ssm start-session --target ${id} --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters '{\"host\":[\"${module.rds.rds_address}\"],\"portNumber\":[\"5432\"],\"localPortNumber\":[\"4898\"]}'"
   ]
 }
+
+output "kms_key_jar_artifacts_arn" {
+  description = "ARN of the KMS key used for JAR artifacts"
+  value       = module.kms.kms_key_jar_artifacts_arn
+}

@@ -17,10 +17,14 @@ variable "current_account_id" {
 variable "current_partition" {
   description = "Current partition account ID"
   type        = string
-  # default = data.aws_partition.current.partition
 }
 
 variable "iam_role_ec2_app_arn" {
   description = "ARN of IAM Role EC2 App"
+  type        = string
+}
+
+variable "iam_role_terraform_execution_arn" {
+  description = "IAM role terraform execution ARN"
   type        = string
 }
