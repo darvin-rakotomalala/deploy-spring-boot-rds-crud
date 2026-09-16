@@ -1,0 +1,94 @@
+# =========================================================================
+# Maven & Build Target
+# =========================================================================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Avoid ignoring Maven wrapper jar file (if you want to commit the wrapper)
+!.mvn/wrapper/maven-wrapper.jar
+
+# =========================================================================
+# Java & Compiled Files
+# =========================================================================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# =========================================================================
+# Environment Variables & Secrets (CRITICAL)
+# =========================================================================
+.env
+.env.local
+*.properties.local
+*.yml.local
+
+# Un-comment the line below if you store secrets in local files
+# application-local.properties
+
+# =========================================================================
+# Logs and Temporary Files
+# =========================================================================
+logs/
+*.log
+*.tmp
+*.bak
+*.swp
+
+# =========================================================================
+# IntelliJ IDEA
+# =========================================================================
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# =========================================================================
+# Eclipse & Spring Tool Suite (STS)
+# =========================================================================
+.metadata
+bin/
+tmp/
+.classpath
+.project
+.settings/
+.springBeans
+.sts4-cache
+.factorypath
+.apt_generated
+
+# =========================================================================
+# Visual Studio Code
+# =========================================================================
+.vscode/
+
+# =========================================================================
+# Operating System Files
+# =========================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
