@@ -60,7 +60,9 @@ jobs:
       - name: Upload JAR to S3
         run: |
           aws s3 cp spring-boot-crud-app/target/${{ env.JAR_NAME }} \
-            s3://${{ env.S3_BUCKET }}/${{ env.JAR_NAME }}
+            s3://${{ env.S3_BUCKET }}/${{ env.JAR_NAME }} \
+            --sse aws:kms \
+            --sse-kms-key-id ${{ env.KMS_KEY_ARN }}
 
   # ---------------------------------------------------------------------
   # Step 2 - Deploy the JAR from S3 onto the EC2 instance via SSM
@@ -76,13 +78,6 @@ jobs:
         with:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Upload JAR to S3
-        run: |
-          aws s3 cp spring-boot-crud-app/target/${{ env.JAR_NAME }} \
-            s3://${{ env.S3_BUCKET }}/${{ env.JAR_NAME }} \
-            --sse aws:kms \
-            --sse-kms-key-id ${{ env.KMS_KEY_ARN }}
 
       - name: Deploy JAR via SSM
         id: ssm-deploy
