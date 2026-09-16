@@ -1,0 +1,213 @@
+{
+  "info": {
+    "name": "spring-boot-rds-crud_ec2",
+    "description": null,
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "description": "",
+        "url": {
+          "raw": "http://ce-dev-alb-1989815688.us-east-1.elb.amazonaws.com/health",
+          "protocol": "http",
+          "host": [
+            "ce-dev-alb-1989815688",
+            "us-east-1",
+            "elb",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "health"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "Create Note",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "description": "",
+        "url": {
+          "raw": "http://ce-dev-alb-1989815688.us-east-1.elb.amazonaws.com/notes",
+          "protocol": "http",
+          "host": [
+            "ce-dev-alb-1989815688",
+            "us-east-1",
+            "elb",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "notes"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"Spring Boot and AWS integration\",\n  \"title\": \"Become Cloud Engineer\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Create multi Note",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "description": "",
+        "url": {
+          "raw": "http://ce-dev-alb-1989815688.us-east-1.elb.amazonaws.com/notes/save-all",
+          "protocol": "http",
+          "host": [
+            "ce-dev-alb-1989815688",
+            "us-east-1",
+            "elb",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "notes",
+            "save-all"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Get and filter Note",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "description": "",
+        "url": {
+          "raw": "http://ce-dev-alb-1989815688.us-east-1.elb.amazonaws.com/notes",
+          "protocol": "http",
+          "host": [
+            "ce-dev-alb-1989815688",
+            "us-east-1",
+            "elb",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "notes"
+          ],
+          "query": [
+            {
+              "key": "title",
+              "value": "note"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "Get Note by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "description": "",
+        "url": {
+          "raw": "http://ce-dev-alb-1989815688.us-east-1.elb.amazonaws.com/notes/3",
+          "protocol": "http",
+          "host": [
+            "ce-dev-alb-1989815688",
+            "us-east-1",
+            "elb",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "notes",
+            "3"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "Update Note",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "description": "",
+        "url": {
+          "raw": "http://ce-dev-alb-1989815688.us-east-1.elb.amazonaws.com/notes",
+          "protocol": "http",
+          "host": [
+            "ce-dev-alb-1989815688",
+            "us-east-1",
+            "elb",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "notes"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"Spring Boot and AWS integration\",\n  \"id\": 5,\n  \"title\": \"Cloud with Darvin\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Delete Note",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "description": "",
+        "url": {
+          "raw": "http://ce-dev-alb-1989815688.us-east-1.elb.amazonaws.com/notes/4",
+          "protocol": "http",
+          "host": [
+            "ce-dev-alb-1989815688",
+            "us-east-1",
+            "elb",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "notes",
+            "4"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    }
+  ],
+  "variable": []
+}
